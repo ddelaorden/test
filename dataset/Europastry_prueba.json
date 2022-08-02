@@ -1,0 +1,28 @@
+{
+	"name": "Europastry_prueba",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SFTP",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": "sample.csv",
+				"folderPath": "/upload"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID; Codigo Tienda;Importe;Fecha",
+				"type": "String"
+			}
+		]
+	}
+}
