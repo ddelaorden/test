@@ -1,5 +1,5 @@
 {
-	"name": "Dataflow1",
+	"name": "Europastry",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -64,9 +64,9 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     recreate:true,",
 				"     format: 'table',",
-				"     staged: true,",
-				"     allowCopyCommand: true,",
+				"     staged: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",

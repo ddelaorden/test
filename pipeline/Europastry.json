@@ -1,0 +1,45 @@
+{
+	"name": "Europastry",
+	"properties": {
+		"activities": [
+			{
+				"name": "Europastry",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Europastry",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CogerFichero": {
+								"Directory": "upload",
+								"File": "sample.csv"
+							},
+							"SFTPsink": {
+								"Directory": "upload/procesados",
+								"File": "x"
+							},
+							"SQLsink": {
+								"TableName": "Europastry"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
