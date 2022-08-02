@@ -1349,7 +1349,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "Europastry_prueba_2",
+								"referenceName": "DelimitedText1",
 								"type": "DatasetReference"
 							},
 							"name": "SFTPsink"
@@ -1381,7 +1381,17 @@
 						"AddGetdate sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
-						"          {ID; Codigo Tienda;Importe;Fecha} as string",
+						"          ID as string,",
+						"          {Codigo Tienda} as string,",
+						"          Importe as string,",
+						"          Fecha as string",
+						"     ),",
+						"     rowUrlColumn:'FechaEjecucion',",
+						"     mapColumn(",
+						"          ID,",
+						"          {Codigo Tienda} = { Codigo Tienda},",
+						"          Importe,",
+						"          Fecha",
 						"     )) ~> SFTPsink",
 						"AddGetdate sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -1406,6 +1416,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
+				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]",
 				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
 			]
 		},
@@ -1438,8 +1449,8 @@
 										"File": "sample.csv"
 									},
 									"SFTPsink": {
-										"Directory": "upload/procesados",
-										"File": "x"
+										"Directory": "upload\\procesados\\",
+										"File": "x.csv"
 									},
 									"SQLsink": {
 										"TableName": "Europastry"
@@ -1464,6 +1475,65 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
 				"[concat(variables('workspaceId'), '/dataflows/Europastry')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SFTP",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Directory": {
+						"type": "string"
+					},
+					"File": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "SftpLocation",
+						"fileName": {
+							"value": "@dataset().File",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().Directory",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "Codigo Tienda",
+						"type": "String"
+					},
+					{
+						"name": "Importe",
+						"type": "String"
+					},
+					{
+						"name": "Fecha",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/SFTP')]"
 			]
 		}
 	]
