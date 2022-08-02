@@ -18,6 +18,13 @@
 						"referenceName": "Europastry_prueba_2",
 						"type": "DatasetReference"
 					},
+					"name": "SFTPsink"
+				},
+				{
+					"dataset": {
+						"referenceName": "Dedicated_table",
+						"type": "DatasetReference"
+					},
 					"name": "SQLsink"
 				}
 			],
@@ -50,6 +57,24 @@
 				"          {ID; Codigo Tienda;Importe;Fecha} = { Codigo Tienda},",
 				"          {ID; Codigo Tienda;Importe;Fecha} = Importe,",
 				"          {ID; Codigo Tienda;Importe;Fecha} = Fecha",
+				"     )) ~> SFTPsink",
+				"AddGetdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID,",
+				"          CodigoTienda = { Codigo Tienda},",
+				"          Importe,",
+				"          Fecha",
 				"     )) ~> SQLsink"
 			]
 		}
