@@ -1,0 +1,27 @@
+{
+	"name": "Merca_txt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sdmaddemos-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "M11M2201.TXT",
+				"fileSystem": "prueba"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

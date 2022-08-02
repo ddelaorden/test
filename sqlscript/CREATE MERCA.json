@@ -1,0 +1,20 @@
+{
+	"name": "CREATE MERCA",
+	"properties": {
+		"folder": {
+			"name": "Dedicated"
+		},
+		"content": {
+			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[MERCA]\n( \n\t[CodigoMerca] [nvarchar](max)  NULL,\n\t[FechaInicio] [nvarchar](max)  NULL,\n\t[FechaFin] [nvarchar](max)  NULL,\n\t[CodigoProducto] [nvarchar](max)  NULL,\n\t[CodigoProcedencia] [nvarchar](max)  NULL,\n\t[Cantidad_KG] [nvarchar](max)  NULL,\n\t[PrecioFrecuente] [nvarchar](max)  NULL,\n\t[PrecioMaximo] [nvarchar](max)  NULL,\n\t[PrecioMinimo] [nvarchar](max)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tHEAP\n)\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "dedicated",
+				"poolName": "dedicated"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

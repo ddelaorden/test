@@ -1,0 +1,86 @@
+{
+	"name": "DFMerca",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Merca_txt",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Merca_tabla",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Column_1 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(CodigoMerca = ltrim(substring(Column_1, 0, 3)),",
+				"          FechaInicio = substring(Column_1, 4, 8),",
+				"          FechaFin = substring(Column_1, 12, 8),",
+				"          CodigoProducto = substring(Column_1, 20, 5),",
+				"          CodigoProcedencia = substring(Column_1, 25, 3),",
+				"          {Cantidad(kg)} = substring(Column_1, 28, 9),",
+				"          PrecioFrecuente = substring(Column_1, 37, 9),",
+				"          PrecioMaximo = substring(Column_1, 46, 8),",
+				"          PrecioMinimo = substring(Column_1, 54, 8)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          CodigoMerca,",
+				"          FechaInicio,",
+				"          FechaFin,",
+				"          CodigoProducto,",
+				"          CodigoProcedencia,",
+				"          {Cantidad(kg)},",
+				"          PrecioFrecuente,",
+				"          PrecioMaximo,",
+				"          PrecioMinimo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CodigoMerca,",
+				"          FechaInicio,",
+				"          FechaFin,",
+				"          CodigoProducto,",
+				"          CodigoProcedencia,",
+				"          Cantidad_KG = {Cantidad(kg)},",
+				"          PrecioFrecuente,",
+				"          PrecioMaximo,",
+				"          PrecioMinimo",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

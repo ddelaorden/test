@@ -1,0 +1,16 @@
+{
+	"name": "LET STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "let LightningStorms = \n    StormEvents\n    | where EventType == \"Lightning\";\nLightningStorms ",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

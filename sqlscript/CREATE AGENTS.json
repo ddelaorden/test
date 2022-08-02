@@ -1,0 +1,20 @@
+{
+	"name": "CREATE AGENTS",
+	"properties": {
+		"folder": {
+			"name": "Dedicated"
+		},
+		"content": {
+			"query": "SET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nCREATE TABLE [dbo].[AGENTS]\n( \n\t[AGENT_CODE] [char](6)  NOT NULL,\n\t[AGENT_NAME] [char](40)  NULL,\n\t[WORKING_AREA] [char](35)  NULL,\n\t[COMMISSION] [real]  NULL,\n\t[PHONE_NO] [char](15)  NULL,\n\t[COUNTRY] [varchar](25)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "on_demand",
+				"poolName": "on_demand"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

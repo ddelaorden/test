@@ -1,0 +1,16 @@
+{
+	"name": "LINE CHART STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "StormEvents\n| summarize event_count=count() by bin(StartTime, 1d)\n| render timechart",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

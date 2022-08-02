@@ -1,0 +1,16 @@
+{
+	"name": "EXTEND STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "StormEvents\n| take 5\n| extend Duration = EndTime - StartTime \n| project StartTime, EndTime, Duration, EventType, State",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

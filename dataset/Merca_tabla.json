@@ -1,0 +1,17 @@
+{
+	"name": "Merca_tabla",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MERCA"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

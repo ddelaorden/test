@@ -1,0 +1,20 @@
+{
+	"name": "DROP AGENTS",
+	"properties": {
+		"folder": {
+			"name": "Dedicated"
+		},
+		"content": {
+			"query": "DROP TABLE [dbo].[AGENTS]\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "on_demand",
+				"poolName": "on_demand"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

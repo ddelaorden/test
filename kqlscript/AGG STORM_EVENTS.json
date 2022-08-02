@@ -1,0 +1,16 @@
+{
+	"name": "AGG STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "StormEvents\n| summarize event_count = count() by State",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

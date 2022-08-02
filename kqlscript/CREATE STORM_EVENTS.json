@@ -1,0 +1,16 @@
+{
+	"name": "CREATE STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": ".create table StormEvents (\nStartTime: datetime, \nEndTime: datetime, \nEpisodeId: int, \nEventId: int, \nState: string, \nEventType: string, \nInjuriesDirect: int, \nInjuriesIndirect: int, \nDeathsDirect: int, \nDeathsIndirect: int, \nDamageProperty: int, \nDamageCrops: int, \nSource: string, \nBeginLocation: string, \nEndLocation: string, \nBeginLat: real, \nBeginLon: real, \nEndLat: real, \nEndLon: real, \nEpisodeNarrative: string, \nEventNarrative: string, \nStormSummary: dynamic)",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

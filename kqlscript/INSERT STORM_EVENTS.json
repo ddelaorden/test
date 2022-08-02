@@ -1,0 +1,16 @@
+{
+	"name": "INSERT STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": ".ingest into table StormEvents 'https://kustosamplefiles.blob.core.windows.net/samples/StormEvents.csv' with (ignoreFirstRecord=true)",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

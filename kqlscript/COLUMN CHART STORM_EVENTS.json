@@ -1,0 +1,16 @@
+{
+	"name": "COLUMN CHART STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "StormEvents \n| summarize event_count=count(), mid = avg(BeginLat) by State \n| sort by mid\n| where event_count > 1800\n| project State, event_count\n| render columnchart",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}

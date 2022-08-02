@@ -1,0 +1,16 @@
+{
+	"name": "JOIN STORM_EVENTS",
+	"properties": {
+		"content": {
+			"query": "let LightningStorms = \n    StormEvents\n    | where EventType == \"Lightning\";\nlet AvalancheStorms = \n    StormEvents\n    | where EventType == \"Avalanche\";\nLightningStorms \n| join (AvalancheStorms) on State\n| distinct State",
+			"metadata": {
+				"language": "kql"
+			},
+			"currentConnection": {
+				"poolName": "dedemo",
+				"databaseName": "test"
+			}
+		},
+		"type": "KqlQuery"
+	}
+}
