@@ -18,13 +18,16 @@
 						"referenceName": "Dedicated_table",
 						"type": "DatasetReference"
 					},
-					"name": "EnTabla"
+					"name": "sink1"
 				}
 			],
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
-				"          {ID; Codigo Tienda;Importe;Fecha} as string",
+				"          ID as short,",
+				"          { Codigo Tienda} as string,",
+				"          Importe as double,",
+				"          Fecha as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -40,7 +43,13 @@
 				"     allowCopyCommand: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> EnTabla"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID,",
+				"          CodigoTienda = { Codigo Tienda},",
+				"          Importe,",
+				"          Fecha",
+				"     )) ~> sink1"
 			]
 		}
 	}
