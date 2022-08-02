@@ -13,7 +13,7 @@
 				"fileName": "sample.csv",
 				"folderPath": "/upload"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": ";",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""

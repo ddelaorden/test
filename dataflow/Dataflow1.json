@@ -1,0 +1,47 @@
+{
+	"name": "Dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Europastry_prueba_2",
+						"type": "DatasetReference"
+					},
+					"name": "CogerFichero"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Dedicated_table",
+						"type": "DatasetReference"
+					},
+					"name": "EnTabla"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          {ID; Codigo Tienda;Importe;Fecha} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CogerFichero",
+				"CogerFichero sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> EnTabla"
+			]
+		}
+	}
+}
