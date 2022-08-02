@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "sdmaddemos"
+		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"value": ""
+		},
+		"SFTP_password": {
+			"value": ""
+		},
+		"sdmaddemos-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"SFTP_properties_typeProperties_host": {
+			"value": "20.31.34.129"
+		},
+		"SFTP_properties_typeProperties_userName": {
+			"value": "sftp"
+		},
+		"sdmaddemos-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://sdmaddemos.dfs.core.windows.net"
+		}
+	}
+}
