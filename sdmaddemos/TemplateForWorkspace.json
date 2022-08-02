@@ -1449,7 +1449,7 @@
 										"File": "sample.csv"
 									},
 									"SFTPsink": {
-										"Directory": "upload\\procesados\\",
+										"Directory": "upload/procesados",
 										"File": "x.csv"
 									},
 									"SQLsink": {
