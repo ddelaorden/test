@@ -53,7 +53,7 @@
 						"fileName": "sample.csv",
 						"folderPath": "/upload"
 					},
-					"columnDelimiter": ",",
+					"columnDelimiter": ";",
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
@@ -70,7 +70,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Merca_tabla')]",
+			"name": "[concat(parameters('workspaceName'), '/Dedicated_table')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -78,12 +78,20 @@
 					"referenceName": "AzureSynapseAnalytics1",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "AzureSqlDWTable",
 				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "MERCA"
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
@@ -262,7 +270,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "Merca_tabla",
+								"referenceName": "Dedicated_table",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -332,7 +340,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/Merca_txt')]",
-				"[concat(variables('workspaceId'), '/datasets/Merca_tabla')]"
+				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
 			]
 		},
 		{
@@ -1307,6 +1315,68 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Europastry_prueba_2",
+								"type": "DatasetReference"
+							},
+							"name": "CogerFichero"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Dedicated_table",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          ID as short,",
+						"          { Codigo Tienda} as string,",
+						"          Importe as double,",
+						"          Fecha as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CogerFichero",
+						"CogerFichero sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID,",
+						"          CodigoTienda = { Codigo Tienda},",
+						"          Importe,",
+						"          Fecha",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
+				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
+			]
 		}
 	]
 }
