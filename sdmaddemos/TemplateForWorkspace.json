@@ -1331,7 +1331,7 @@
 			"location": "westeurope"
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Dataflow1')]",
+			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
 			"type": "Microsoft.Synapse/workspaces/dataflows",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1350,6 +1350,13 @@
 						{
 							"dataset": {
 								"referenceName": "Europastry_prueba_2",
+								"type": "DatasetReference"
+							},
+							"name": "SFTPsink"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dedicated_table",
 								"type": "DatasetReference"
 							},
 							"name": "SQLsink"
@@ -1384,12 +1391,88 @@
 						"          {ID; Codigo Tienda;Importe;Fecha} = { Codigo Tienda},",
 						"          {ID; Codigo Tienda;Importe;Fecha} = Importe,",
 						"          {ID; Codigo Tienda;Importe;Fecha} = Fecha",
+						"     )) ~> SFTPsink",
+						"AddGetdate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     staged: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID,",
+						"          CodigoTienda = { Codigo Tienda},",
+						"          Importe,",
+						"          Fecha",
 						"     )) ~> SQLsink"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]"
+				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
+				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Europastry",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Europastry",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CogerFichero": {
+										"Directory": "upload",
+										"File": "sample.csv"
+									},
+									"SFTPsink": {
+										"Directory": "upload/procesados",
+										"File": "x"
+									},
+									"SQLsink": {
+										"TableName": "Europastry"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/dataflows/Europastry')]"
 			]
 		}
 	]
