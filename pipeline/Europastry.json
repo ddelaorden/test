@@ -24,8 +24,8 @@
 								"File": "sample.csv"
 							},
 							"SFTPsink": {
-								"Directory": "upload/procesados",
-								"File": "x"
+								"Directory": "upload\\procesados\\",
+								"File": "x.csv"
 							},
 							"SQLsink": {
 								"TableName": "Europastry"

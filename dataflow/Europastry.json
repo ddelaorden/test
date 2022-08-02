@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Europastry_prueba_2",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					},
 					"name": "SFTPsink"
@@ -47,7 +47,17 @@
 				"AddGetdate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          {ID; Codigo Tienda;Importe;Fecha} as string",
+				"          ID as string,",
+				"          {Codigo Tienda} as string,",
+				"          Importe as string,",
+				"          Fecha as string",
+				"     ),",
+				"     rowUrlColumn:'FechaEjecucion',",
+				"     mapColumn(",
+				"          ID,",
+				"          {Codigo Tienda} = { Codigo Tienda},",
+				"          Importe,",
+				"          Fecha",
 				"     )) ~> SFTPsink",
 				"AddGetdate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
