@@ -37,6 +37,93 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Europastry",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Europastry",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CogerFichero": {
+										"Directory": "upload",
+										"File": "sample.csv"
+									},
+									"SFTPsink": {
+										"Directory": "upload/procesados",
+										"FileName": "x"
+									},
+									"SQLsink": {
+										"TableName": "Europastry"
+									}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/Europastry')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Dedicated_table')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Europastry_prueba_2')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -81,35 +168,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SFTP')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Dedicated_table')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSynapseAnalytics1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"TableName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": {
-						"value": "@dataset().TableName",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/AzureSynapseAnalytics1')]"
 			]
 		},
 		{
@@ -354,6 +412,85 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/Merca_txt')]",
+				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Europastry_prueba_2",
+								"type": "DatasetReference"
+							},
+							"name": "CogerFichero"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SendCSVtoSFTP",
+								"type": "DatasetReference"
+							},
+							"name": "SFTPsink"
+						},
+						{
+							"dataset": {
+								"referenceName": "Dedicated_table",
+								"type": "DatasetReference"
+							},
+							"name": "SQLsink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddGetdate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID as short,",
+						"          { Codigo Tienda} as string,",
+						"          Importe as double,",
+						"          Fecha as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CogerFichero",
+						"CogerFichero derive(FechaEjecucion = toString(currentUTC())) ~> AddGetdate",
+						"AddGetdate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:[(concat(toString(currentUTC()),'.csv'))],",
+						"     partitionBy('hash', 1)) ~> SFTPsink",
+						"AddGetdate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     staged: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ID,",
+						"          { Codigo Tienda},",
+						"          Importe,",
+						"          Fecha",
+						"     )) ~> SQLsink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
+				"[concat(variables('workspaceId'), '/datasets/SendCSVtoSFTP')]",
 				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
 			]
 		},
@@ -1331,154 +1468,7 @@
 			"location": "westeurope"
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
-			"type": "Microsoft.Synapse/workspaces/dataflows",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Europastry_prueba_2",
-								"type": "DatasetReference"
-							},
-							"name": "CogerFichero"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DelimitedText1",
-								"type": "DatasetReference"
-							},
-							"name": "SFTPsink"
-						},
-						{
-							"dataset": {
-								"referenceName": "Dedicated_table",
-								"type": "DatasetReference"
-							},
-							"name": "SQLsink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddGetdate"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          ID as short,",
-						"          { Codigo Tienda} as string,",
-						"          Importe as double,",
-						"          Fecha as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> CogerFichero",
-						"CogerFichero derive(FechaEjecucion = toString(currentUTC())) ~> AddGetdate",
-						"AddGetdate sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          ID as string,",
-						"          {Codigo Tienda} as string,",
-						"          Importe as string,",
-						"          Fecha as string",
-						"     ),",
-						"     rowUrlColumn:'FechaEjecucion',",
-						"     mapColumn(",
-						"          ID,",
-						"          {Codigo Tienda} = { Codigo Tienda},",
-						"          Importe,",
-						"          Fecha",
-						"     )) ~> SFTPsink",
-						"AddGetdate sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     recreate:true,",
-						"     format: 'table',",
-						"     staged: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          ID,",
-						"          { Codigo Tienda},",
-						"          Importe,",
-						"          Fecha",
-						"     )) ~> SQLsink"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
-				"[concat(variables('workspaceId'), '/datasets/DelimitedText1')]",
-				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Europastry')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Europastry",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Europastry",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"CogerFichero": {
-										"Directory": "upload",
-										"File": "sample.csv"
-									},
-									"SFTPsink": {
-										"Directory": "upload/procesados",
-										"File": "x.csv"
-									},
-									"SQLsink": {
-										"TableName": "Europastry"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
-				"[concat(variables('workspaceId'), '/dataflows/Europastry')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
+			"name": "[concat(parameters('workspaceName'), '/SendCSVtoSFTP')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -1490,7 +1480,7 @@
 					"Directory": {
 						"type": "string"
 					},
-					"File": {
+					"FileName": {
 						"type": "string"
 					}
 				},
@@ -1500,7 +1490,7 @@
 					"location": {
 						"type": "SftpLocation",
 						"fileName": {
-							"value": "@dataset().File",
+							"value": "@dataset().FileName",
 							"type": "Expression"
 						},
 						"folderPath": {
@@ -1513,24 +1503,7 @@
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "ID",
-						"type": "String"
-					},
-					{
-						"name": "Codigo Tienda",
-						"type": "String"
-					},
-					{
-						"name": "Importe",
-						"type": "String"
-					},
-					{
-						"name": "Fecha",
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/SFTP')]"
