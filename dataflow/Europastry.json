@@ -30,7 +30,13 @@
 			],
 			"transformations": [
 				{
-					"name": "AddGetdate"
+					"name": "TransformDataTypes"
+				},
+				{
+					"name": "AddDates"
+				},
+				{
+					"name": "RemoveColumns"
 				}
 			],
 			"scriptLines": [
@@ -43,12 +49,23 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> CogerFichero",
-				"CogerFichero derive(FechaEjecucion = toString(currentUTC())) ~> AddGetdate",
-				"AddGetdate sink(allowSchemaDrift: true,",
+				"CogerFichero derive({Fecha-Hora} = toTimestamp(Fecha, 'dd/MM/yyyy')) ~> TransformDataTypes",
+				"TransformDataTypes derive({Fecha-Hora Corregida} = iif({ Codigo Tienda} == 'A1', toTimestamp(Fecha, 'dd/MM/yyyy', 'GMT+5'), {Fecha-Hora}),",
+				"          Fecha = toDate(Fecha, 'dd/MM/yyyy')) ~> AddDates",
+				"AddDates select(mapColumn(",
+				"          ID,",
+				"          { Codigo Tienda},",
+				"          Importe,",
+				"          Fecha,",
+				"          {Fecha-Hora Corregida}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+				"RemoveColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:[(concat(toString(currentUTC()),'.csv'))],",
 				"     partitionBy('hash', 1)) ~> SFTPsink",
-				"AddGetdate sink(allowSchemaDrift: true,",
+				"RemoveColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -64,7 +81,8 @@
 				"          ID,",
 				"          { Codigo Tienda},",
 				"          Importe,",
-				"          Fecha",
+				"          Fecha,",
+				"          {Fecha-Hora Corregida}",
 				"     )) ~> SQLsink"
 			]
 		}
