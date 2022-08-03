@@ -81,6 +81,77 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Europastry",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlDWSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "SftpWriteSettings",
+									"operationTimeout": "01:00:00",
+									"useTempFileRename": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Dedicated_table",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "Europastry"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SendCSVtoSFTP",
+								"type": "DatasetReference",
+								"parameters": {
+									"Directory": "upload/procesados/tablas",
+									"FileName": {
+										"value": "@concat('Europastry',string(utcnow()))",
+										"type": "Expression"
+									}
+								}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -91,7 +162,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/Europastry')]",
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]",
+				"[concat(variables('workspaceId'), '/datasets/SendCSVtoSFTP')]"
 			]
 		},
 		{
@@ -452,7 +525,13 @@
 					],
 					"transformations": [
 						{
-							"name": "AddGetdate"
+							"name": "TransformDataTypes"
+						},
+						{
+							"name": "AddDates"
+						},
+						{
+							"name": "RemoveColumns"
 						}
 					],
 					"scriptLines": [
@@ -465,12 +544,23 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> CogerFichero",
-						"CogerFichero derive(FechaEjecucion = toString(currentUTC())) ~> AddGetdate",
-						"AddGetdate sink(allowSchemaDrift: true,",
+						"CogerFichero derive({Fecha-Hora} = toTimestamp(Fecha, 'dd/MM/yyyy')) ~> TransformDataTypes",
+						"TransformDataTypes derive({Fecha-Hora Corregida} = iif({ Codigo Tienda} == 'A1', toTimestamp(Fecha, 'dd/MM/yyyy', 'GMT+5'), {Fecha-Hora}),",
+						"          Fecha = toDate(Fecha, 'dd/MM/yyyy')) ~> AddDates",
+						"AddDates select(mapColumn(",
+						"          ID,",
+						"          { Codigo Tienda},",
+						"          Importe,",
+						"          Fecha,",
+						"          {Fecha-Hora Corregida}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+						"RemoveColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     partitionFileNames:[(concat(toString(currentUTC()),'.csv'))],",
 						"     partitionBy('hash', 1)) ~> SFTPsink",
-						"AddGetdate sink(allowSchemaDrift: true,",
+						"RemoveColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -486,7 +576,8 @@
 						"          ID,",
 						"          { Codigo Tienda},",
 						"          Importe,",
-						"          Fecha",
+						"          Fecha,",
+						"          {Fecha-Hora Corregida}",
 						"     )) ~> SQLsink"
 					]
 				}
