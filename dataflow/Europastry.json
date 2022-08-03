@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "SendCSVtoSFTP",
 						"type": "DatasetReference"
 					},
 					"name": "SFTPsink"
@@ -46,19 +46,8 @@
 				"CogerFichero derive(FechaEjecucion = toString(currentUTC())) ~> AddGetdate",
 				"AddGetdate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          ID as string,",
-				"          {Codigo Tienda} as string,",
-				"          Importe as string,",
-				"          Fecha as string",
-				"     ),",
-				"     rowUrlColumn:'FechaEjecucion',",
-				"     mapColumn(",
-				"          ID,",
-				"          {Codigo Tienda} = { Codigo Tienda},",
-				"          Importe,",
-				"          Fecha",
-				"     )) ~> SFTPsink",
+				"     partitionFileNames:[(concat(toString(currentUTC()),'.csv'))],",
+				"     partitionBy('hash', 1)) ~> SFTPsink",
 				"AddGetdate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
