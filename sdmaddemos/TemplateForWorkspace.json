@@ -124,7 +124,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Europastry_prueba_2')]",
+			"name": "[concat(parameters('workspaceName'), '/GetCSVfromSFTP')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -139,6 +139,9 @@
 					"File": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "SFTP"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -425,7 +428,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Europastry_prueba_2",
+								"referenceName": "GetCSVfromSFTP",
 								"type": "DatasetReference"
 							},
 							"name": "CogerFichero"
@@ -489,7 +492,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/datasets/Europastry_prueba_2')]",
+				"[concat(variables('workspaceId'), '/datasets/GetCSVfromSFTP')]",
 				"[concat(variables('workspaceId'), '/datasets/SendCSVtoSFTP')]",
 				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]"
 			]
@@ -1483,6 +1486,9 @@
 					"FileName": {
 						"type": "string"
 					}
+				},
+				"folder": {
+					"name": "SFTP"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
