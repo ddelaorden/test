@@ -103,7 +103,7 @@
 						"parameters": {
 							"Directory": "upload/procesados/tablas",
 							"FileName": {
-								"value": "@concat('Europastry',string(utcnow()))",
+								"value": "@concat('Europastry',string(utcnow()), '.csv')",
 								"type": "Expression"
 							}
 						}
