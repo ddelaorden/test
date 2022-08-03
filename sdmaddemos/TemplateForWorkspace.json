@@ -1046,7 +1046,7 @@
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
-					"referenceName": "SampleSpark",
+					"referenceName": "MyApache",
 					"type": "BigDataPoolReference"
 				},
 				"sessionProperties": {
@@ -1060,7 +1060,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e394cc54-da09-40fd-a56c-f63d75442113"
+						"spark.autotune.trackingId": "7b600261-20f8-4414-b222-c2bd006f9c1e"
 					}
 				},
 				"metadata": {
@@ -1074,19 +1074,19 @@
 						"name": "python"
 					},
 					"a365ComputeOptions": {
-						"id": "/subscriptions/aab15652-c938-4073-af8a-70635e111c18/resourceGroups/sdmadataplatform/providers/Microsoft.Synapse/workspaces/sdmaddemos/bigDataPools/SampleSpark",
-						"name": "SampleSpark",
+						"id": "/subscriptions/aab15652-c938-4073-af8a-70635e111c18/resourceGroups/sdmadataplatform/providers/Microsoft.Synapse/workspaces/sdmaddemos/bigDataPools/MyApache",
+						"name": "MyApache",
 						"type": "Spark",
-						"endpoint": "https://sdmaddemos.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SampleSpark",
+						"endpoint": "https://sdmaddemos.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/MyApache",
 						"auth": {
 							"type": "AAD",
 							"authResource": "https://dev.azuresynapse.net"
 						},
-						"sparkVersion": "2.4",
-						"nodeCount": 3,
+						"sparkVersion": "3.2",
+						"nodeCount": 10,
 						"cores": 8,
 						"memory": 56,
-						"automaticScaleJobs": true
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1111,14 +1111,14 @@
 							"df_nyc_tlc = nyc_tlc.to_spark_dataframe()"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
 								"source_hidden": false,
-								"outputs_hidden": true
+								"outputs_hidden": false
 							},
 							"nteract": {
 								"transient": {
@@ -1131,7 +1131,7 @@
 							"df_nyc_tlc.printSchema()"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -1153,14 +1153,14 @@
 							"display(df_nyc)"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
 								"source_hidden": false,
-								"outputs_hidden": true
+								"outputs_hidden": false
 							},
 							"nteract": {
 								"transient": {
@@ -1180,7 +1180,7 @@
 							"matplotlib.pyplot.show()"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 8
 					}
 				]
 			},
@@ -1246,6 +1246,15 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/MyApache')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
 		}
 	]
 }
