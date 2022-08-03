@@ -4,7 +4,7 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "SampleSpark",
+			"referenceName": "MyApache",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
@@ -18,111 +18,11 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d0c370ca-dbb7-458e-80a1-5c6afdc50a77"
+				"spark.autotune.trackingId": "8b3cd9d2-43c5-40c5-8566-504f7f7238e6"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1",
-				"state": {
-					"a3876007-215f-43be-8fd0-4d0cb322b919": {
-						"type": "Synapse.DataFrame",
-						"sync_state": {
-							"table": {
-								"rows": [
-									{
-										"0": "1",
-										"1": "2.9553852937285994",
-										"2": "4624873.580000004"
-									},
-									{
-										"0": "6",
-										"1": "3.0823106614325835",
-										"2": "187660.31999999998"
-									},
-									{
-										"0": "3",
-										"1": "3.124120509875713",
-										"2": "274744.52999999985"
-									},
-									{
-										"0": "5",
-										"1": "3.1096431007047065",
-										"2": "314624.3600000001"
-									},
-									{
-										"0": "9",
-										"1": "6.23",
-										"2": "49.84"
-									},
-									{
-										"0": "4",
-										"1": "3.132080374155551",
-										"2": "126570.49999999999"
-									},
-									{
-										"0": "8",
-										"1": "7.831666666666667",
-										"2": "46.99"
-									},
-									{
-										"0": "7",
-										"1": "2.382",
-										"2": "11.91"
-									},
-									{
-										"0": "2",
-										"1": "3.198328131230063",
-										"2": "1026740.0899999997"
-									},
-									{
-										"0": "0",
-										"1": "2.936587699848291",
-										"2": "50327.24000000001"
-									}
-								],
-								"schema": [
-									{
-										"key": "0",
-										"name": "passengerCount",
-										"type": "int"
-									},
-									{
-										"key": "1",
-										"name": "AvgTripDistance",
-										"type": "double"
-									},
-									{
-										"key": "2",
-										"name": "SumTripDistance",
-										"type": "double"
-									}
-								],
-								"truncated": false
-							},
-							"isSummary": false,
-							"language": "scala"
-						},
-						"persist_state": {
-							"view": {
-								"type": "details",
-								"chartOptions": {
-									"chartType": "bar",
-									"aggregationType": "sum",
-									"categoryFieldKeys": [
-										"1"
-									],
-									"seriesFieldKeys": [
-										"0"
-									],
-									"isStacked": false
-								}
-							}
-						}
-					}
-				}
-			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
@@ -132,20 +32,19 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/aab15652-c938-4073-af8a-70635e111c18/resourceGroups/sdmadataplatform/providers/Microsoft.Synapse/workspaces/sdmaddemos/bigDataPools/SampleSpark",
-				"name": "SampleSpark",
+				"id": "/subscriptions/aab15652-c938-4073-af8a-70635e111c18/resourceGroups/sdmadataplatform/providers/Microsoft.Synapse/workspaces/sdmaddemos/bigDataPools/MyApache",
+				"name": "MyApache",
 				"type": "Spark",
-				"endpoint": "https://sdmaddemos.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SampleSpark",
+				"endpoint": "https://sdmaddemos.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/MyApache",
 				"auth": {
 					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net",
-					"authHeader": null
+					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "2.4",
-				"nodeCount": 3,
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
 				"cores": 8,
 				"memory": 56,
-				"extraHeader": null
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -169,15 +68,14 @@
 					"nyc_tlc = NycTlcYellow(start_date=start_date, end_date=end_date)\r\n",
 					"df_nyc_tlc = nyc_tlc.to_spark_dataframe()"
 				],
-				"attachments": null,
-				"execution_count": 1
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
-						"outputs_hidden": true
+						"outputs_hidden": false
 					},
 					"nteract": {
 						"transient": {
@@ -189,8 +87,7 @@
 				"source": [
 					"df_nyc_tlc.printSchema()"
 				],
-				"attachments": null,
-				"execution_count": 2
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -211,15 +108,14 @@
 					"df_nyc = df_nyc_tlc.groupBy(\"passengerCount\").agg(F.avg('tripDistance').alias('AvgTripDistance'), F.sum('tripDistance').alias('SumTripDistance'))\r\n",
 					"display(df_nyc)"
 				],
-				"attachments": null,
-				"execution_count": 3
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
-						"outputs_hidden": true
+						"outputs_hidden": false
 					},
 					"nteract": {
 						"transient": {
@@ -238,8 +134,7 @@
 					"seaborn.lineplot(x=\"passengerCount\", y=\"AvgTripDistance\" , data = pdf_nyc)\r\n",
 					"matplotlib.pyplot.show()"
 				],
-				"attachments": null,
-				"execution_count": 4
+				"execution_count": 8
 			}
 		]
 	}
