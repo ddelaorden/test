@@ -1,5 +1,5 @@
 {
-	"name": "Europastry_prueba_2",
+	"name": "GetCSVfromSFTP",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SFTP",
@@ -12,6 +12,9 @@
 			"File": {
 				"type": "string"
 			}
+		},
+		"folder": {
+			"name": "SFTP"
 		},
 		"annotations": [],
 		"type": "DelimitedText",

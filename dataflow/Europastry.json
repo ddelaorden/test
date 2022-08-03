@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Europastry_prueba_2",
+						"referenceName": "GetCSVfromSFTP",
 						"type": "DatasetReference"
 					},
 					"name": "CogerFichero"
