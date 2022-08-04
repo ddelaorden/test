@@ -40,7 +40,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Copiar tabla",
 				"type": "Copy",
 				"dependsOn": [
 					{
