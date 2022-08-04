@@ -1,0 +1,7 @@
+{
+	"name": "Europastry",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Se conecta a una máquina DB2"
+	}
+}
