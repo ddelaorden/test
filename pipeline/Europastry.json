@@ -40,7 +40,7 @@
 				}
 			},
 			{
-				"name": "Copiar tabla",
+				"name": "ttttt",
 				"type": "Copy",
 				"dependsOn": [
 					{
