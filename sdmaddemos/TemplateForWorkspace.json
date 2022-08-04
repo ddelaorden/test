@@ -82,7 +82,7 @@
 						}
 					},
 					{
-						"name": "Copiar tabla",
+						"name": "ttttt",
 						"type": "Copy",
 						"dependsOn": [
 							{
@@ -161,6 +161,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/dataflows/Europastry')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
 				"[concat(variables('workspaceId'), '/datasets/Dedicated_table')]",
 				"[concat(variables('workspaceId'), '/datasets/SendCSVtoSFTP')]"
 			]
@@ -1270,6 +1271,26 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [ID]\n,[ Codigo Tienda]\n,[Importe]\n,[Fecha]\n,[Fecha-Hora Corregida]\n FROM [dbo].[Europastry]",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "dedicated",
+						"poolName": "dedicated"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
