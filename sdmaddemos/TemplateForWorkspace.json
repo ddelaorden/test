@@ -21,7 +21,7 @@
 		},
 		"SFTP_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "20.31.34.129"
+			"defaultValue": "20.76.165.234"
 		},
 		"SFTP_properties_typeProperties_userName": {
 			"type": "string",
@@ -82,7 +82,7 @@
 						}
 					},
 					{
-						"name": "Copy data1",
+						"name": "Copiar tabla",
 						"type": "Copy",
 						"dependsOn": [
 							{
@@ -1060,7 +1060,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "7b600261-20f8-4414-b222-c2bd006f9c1e"
+						"spark.autotune.trackingId": "8b3cd9d2-43c5-40c5-8566-504f7f7238e6"
 					}
 				},
 				"metadata": {
@@ -1085,8 +1085,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 8,
-						"memory": 56,
-						"automaticScaleJobs": false
+						"memory": 56
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1212,6 +1211,31 @@
 			"location": "westeurope"
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/MyApache')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 10,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "Medium",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": true,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/dedicated')]",
 			"type": "Microsoft.Synapse/workspaces/sqlPools",
 			"apiVersion": "2019-06-01-preview",
@@ -1246,15 +1270,6 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/MyApache')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
 		}
 	]
 }
